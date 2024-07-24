@@ -42,6 +42,9 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: .vitepress/dist
+      - name: Start proxy
+        run: |
+          npm run server:proxy
 
   deploy:
     environment:

@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import axios from "axios"
+import { shared } from "../../config/shared"
 
 const props = defineProps<{ href: string }>()
 
 const isExternal = computed(() => /https?:\/\//.test(props.href))
 
-const domain = window.location.hostname
+const domain = shared.sitemap.hostname
 
 const title = ref<string>('')
 
 const fetchTitle = async (url: string) => {
   try {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error('Не удалось получить ответ от страницы')
-    }
-    const text = await response.text()
+    const response = await axios.get(`http://localhost:8080/${url}`)
+    const text = response.data
     const parser = new DOMParser()
     const doc = parser.parseFromString(text, 'text/html')
     const pageTitle = doc.querySelector('title')?.textContent || 'Заголовок страницы не найден'
